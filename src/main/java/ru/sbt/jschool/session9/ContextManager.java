@@ -1,29 +1,19 @@
 package ru.sbt.jschool.session9;
 
-import java.util.List;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.Future;
-
 public class ContextManager implements Context {
 
     private Context[] contextArr;
-    private List<Future<Object>> futureList;
 
-    public ContextManager(Context[] context, List<Future<Object>> list){
+    public ContextManager(Context[] context){
         contextArr = context;
-        futureList = list;
     }
-
-
-
-
 
     @Override
     public int getCompletedTaskCount() {
         int count = 0;
         for(int i=0; i<contextArr.length; i++){
             try {
-                futureList.get(i).get();
+                while(!contextArr[i].isFinished()){}
                 count += contextArr[ i ].getCompletedTaskCount();
             }catch(Exception e){}
         }
@@ -35,7 +25,7 @@ public class ContextManager implements Context {
         int count = 0;
         for(int i=0; i<contextArr.length; i++){
             try {
-                futureList.get(i).get();
+                while(!contextArr[i].isFinished()){}
                 count += contextArr[ i ].getFailedTaskCount();
             }catch(Exception e){}
         }
@@ -47,7 +37,7 @@ public class ContextManager implements Context {
         int count = 0;
         for(int i=0; i<contextArr.length; i++){
             try {
-                futureList.get(i).get();
+                while(!contextArr[i].isFinished()){}
                 count += contextArr[ i ].getInterruptedTaskCount();
             }catch(Exception e){}
         }
@@ -59,7 +49,6 @@ public class ContextManager implements Context {
         for(Context context : contextArr){
             context.interrupt();
         }
-
     }
 
     @Override
@@ -70,7 +59,6 @@ public class ContextManager implements Context {
         }
         if(count == contextArr.length)
             return true;
-
         return false;
     }
 }

@@ -1,6 +1,6 @@
 package ru.sbt.jschool.session9;
 
-public class Task2 extends TaskManager implements Runnable, Context{
+public class Task2 implements Runnable, Context{
     public String name ;
     private int completedTaskCount;
     private int failedTaskCount;
@@ -11,14 +11,11 @@ public class Task2 extends TaskManager implements Runnable, Context{
         this.name = name;
     }
 
-
     @Override
     public void run() {
-
         for(int i=0; i<10; i++){
             if(!isFinished) {
                 try{
-                    Thread.sleep(200);
                     if(i==1)
                         System.out.println(i/0);
                     System.out.println(name + " " + i);
