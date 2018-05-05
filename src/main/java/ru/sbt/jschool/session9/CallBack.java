@@ -2,39 +2,45 @@ package ru.sbt.jschool.session9;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
 public class CallBack implements Runnable {
 
     private List<Future<Object>> futureList = new ArrayList<>();
-    private Context context;
+    private Context[] contextArr;
 
     public void setList(List<Future<Object>> futureList){
         this.futureList = futureList;
     }
 
-    public void setContext(Context context){
-        this.context = context;
+    public CallBack(Context... context){
+        this.contextArr = context;
+    }
+
+    public Context[] getContextArr(){
+        return contextArr;
     }
 
     @Override
     public void run() {
 
 
-        int count = 0;
 
-        while(count< futureList.size()){
-            for(Future<Object> f : futureList) {
-                if ( f.isDone() && count < futureList.size()) {
-                    count++;
-                    ((ContextImpl) context).incrCompletedTaskCount();
-                }
+
+        for(Future<Object> f : futureList){
+            try{
+                f.get();
             }
+            catch(Exception e){}
         }
 
 
-
-        context.interrupt();
+        /*for(Context context : contextArr) {
+            System.out.println("Completed tasks count: " + context.getCompletedTaskCount());
+            System.out.println("Interrupted tasks count: " + context.getInterruptedTaskCount());
+            System.out.println("Failed tasks count: " + context.getFailedTaskCount());
+        }*/
 
 
     }

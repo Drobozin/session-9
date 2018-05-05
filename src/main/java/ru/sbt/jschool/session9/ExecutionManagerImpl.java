@@ -16,13 +16,13 @@ public class ExecutionManagerImpl implements ExecutionManager {
         for(Runnable task : tasks){
             futureList.add(service.submit(task, null));
         }
-        Context context = new ContextImpl();
-        CallBack cb = (CallBack)callback;
-        cb.setList(futureList);
-        cb.setContext(context);
+
+        CallBack callBack = (CallBack)callback;
+        callBack.setList(futureList);
+
         service.execute(callback);
 
         service.shutdown();
-        return context;
+        return new ContextManager(callBack.getContextArr(), futureList);
     }
 }
