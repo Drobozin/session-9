@@ -1,21 +1,41 @@
 package ru.sbt.jschool.session9;
 
+
+
 public class Main  {
+
+
+
     public static void main(String[] arg){
-        Task t1 = new Task("Task 1");
-        Task t2 = new Task("Task 2");
+        TaskManager taskManager = new TaskManager();
+
+        taskManager.addTask(new Task1("Task1-1"));
+        taskManager.addTask(new Task1("Task1-2"));
+        taskManager.addTask(new Task2("Task2-3"));
+        taskManager.addTask(new Task2("Task2-4"));
+
 
         ExecutionManager ex = new ExecutionManagerImpl();
-        Context context = ex.execute(new CallBack(), t1,t2);
+        CallBack callBack = new CallBack(taskManager.getContexts());
 
-        while(!context.isFinished()){
+
+        Context contextManager = ex.execute(callBack, taskManager.getRuns());
+        try{
+            Thread.sleep(800);
+        }catch(Exception e){}
+        contextManager.interrupt();
+
+        while(!contextManager.isFinished()){
             try{
-                Thread.sleep(1);
-            }catch(Exception e){}
+                Thread.sleep(10);
 
+            }catch(Exception e){}
         }
-        System.out.println("Completed count "+context.getCompletedTaskCount());
-        System.out.println("Interrupted Count "+context.getInterruptedTaskCount());
+
+        System.out.println("Completed tasks count: " + contextManager.getCompletedTaskCount());
+        System.out.println("Interrupted tasks count: " + contextManager.getInterruptedTaskCount());
+        System.out.println("Failed tasks count: " + contextManager.getFailedTaskCount());
+
 
 
     }

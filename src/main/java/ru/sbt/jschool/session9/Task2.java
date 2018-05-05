@@ -1,6 +1,6 @@
 package ru.sbt.jschool.session9;
 
-public class Task2 extends MyTask implements Runnable, Context{
+public class Task2 extends TaskManager implements Runnable, Context{
     public String name ;
     private int completedTaskCount;
     private int failedTaskCount;
